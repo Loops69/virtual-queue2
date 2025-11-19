@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virtual Queue</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <img src="https://img.icons8.com/color/48/000000/queue.png" class="logo" alt="Queue Logo"/>
+  <h1>Join the Virtual Queue</h1>
+  <form id="queueForm">
+    <input type="text" id="name" placeholder="Your Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="tel" id="phone" placeholder="Phone" required>
+    <button type="submit">Join Queue</button>
+  </form>
+
+  <h2>Current Queue</h2>
+  <ul id="queueList" class="queue-cards"></ul>
+
+  <a href="admin.html" class="admin-link">Admin Panel</a>
+</div>
+
+<script>
+const queueList = document.getElementById('queueList');
+const form = document.getElementById('queueForm');
+let queue = JSON.parse(localStorage.getItem('queue')) || [];
+
+function updateQueue() {
+  queueList.innerHTML = '';
+  queue.forEach((person, i) => {
+    const li = document.createElement('li');
+    li.className = "queue-card";
+    li.innerHTML = `
+      <img src="https://img.icons8.com/ios-filled/24/000000/user.png"/>
+      <div>
+        <strong>${i+1}. ${person.name}</strong>
+        <p>${person.email} | ${person.phone}</p>
+      </div>
+    `;
+    queueList.appendChild(li);
+  });
+  localStorage.setItem('queue', JSON.stringify(queue));
+}
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const phone = document.getElementById('phone').value;
+  queue.push({name, email, phone});
+  updateQueue();
+  form.reset();
+});
+
+updateQueue();
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <img src="https://img.icons8.com/color/48/000000/admin-settings-male.png" class="logo" alt="Admin Logo"/>
+  <h1>Admin Panel</h1>
+  <form id="loginForm">
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Log In</button>
+  </form>
+
+  <div id="adminPanel" style="display:none;">
+    <button id="callNextBtn">Call Next</button>
+    <h2>Current Queue</h2>
+    <ul id="queueListAdmin" class="queue-cards"></ul>
+  </div>
+</div>
+
+<script>
+const loginForm = document.getElementById('loginForm');
+const adminPanel = document.getElementById('adminPanel');
+const queueListAdmin = document.getElementById('queueListAdmin');
+const callNextBtn = document.getElementById('callNextBtn');
+let queue = JSON.parse(localStorage.getItem('queue')) || [];
+
+function updateAdminQueue() {
+  queueListAdmin.innerHTML = '';
+  queue.forEach((person, i) => {
+    const li = document.createElement('li');
+    li.className = "queue-card";
+    li.innerHTML = `
+      <img src="https://img.icons8.com/ios-filled/24/000000/user.png"/>
+      <div>
+        <strong>${i+1}. ${person.name}</strong>
+        <p>${person.email} | ${person.phone}</p>
+      </div>
+    `;
+    queueListAdmin.appendChild(li);
+  });
+}
+
+loginForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  if(username === 'admin' && password === 'admin'){
+    loginForm.style.display = 'none';
+    adminPanel.style.display = 'block';
+    updateAdminQueue();
+  } else {
+    alert('Wrong credentials');
+  }
+});
+
+callNextBtn.addEventListener('click', () => {
+  if(queue.length > 0) {
+    queue.shift();
+    localStorage.setItem('queue', JSON.stringify(queue));
+    updateAdminQueue();
+  }
+});
+</script>
+</body>
+</html>
